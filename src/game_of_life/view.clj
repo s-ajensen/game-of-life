@@ -1,8 +1,7 @@
 (ns game-of-life.view
   (:require
     [quil.core :as q :include-macros true]
-    [game-of-life.util :refer :all]
-    [game-of-life.game :refer [get-cell]]))
+    [game-of-life.util :refer :all]))
 
 (def scale 20)
 

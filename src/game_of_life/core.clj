@@ -2,7 +2,7 @@
   (:require [quil.core :as q]
             [quil.middleware :as m]
             [game-of-life.util :refer :all]
-            [game-of-life.game :refer [get-cell next-state]]
+            [game-of-life.game :refer [next-state]]
             [game-of-life.view :refer [draw-grid scale]]))
 
 (declare life)

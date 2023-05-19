@@ -1,12 +1,6 @@
 (ns game-of-life.game
   (:require [game-of-life.util :refer :all]))
 
-(defn get-cell
-  ([grid x y]
-   (nth (nth grid x 0) y 0))
-  ([grid pt]
-   (nth (nth grid (first pt) []) (last pt) 0)))
-
 (defn get-neighbors
   [grid row col]
   (let [offsets '(-1 0 1)

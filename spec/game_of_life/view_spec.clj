@@ -1,7 +1,6 @@
 (ns game-of-life.view-spec
   (:require [quil.core :as q]
             [speclj.core :refer :all]
-            [speclj.stub :as stub]
             [game-of-life.view :refer :all]
             [game-of-life.util :refer :all]))
 
