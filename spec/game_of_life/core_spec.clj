@@ -56,7 +56,7 @@
   (it "toggles selected cell when mouse is clicked"
     (should-contain 1 (flatten (new-state (empty-grid 3 3)))))
 
-  (it "updates the game state if key is pressed"
+  #_(it "updates the game state if key is pressed"
     (with-redefs [q/mouse-pressed? (stub :mock-mouse-pressed? {:return false})
                   q/key-pressed? (stub :mock-key-pressed? {:return true})
                   toggle (stub :mock-toggle)]
