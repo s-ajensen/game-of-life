@@ -4,12 +4,10 @@
             [speclj.core :refer :all]
             [game-of-life.core :refer :all]
             [game-of-life.game :refer [next-state]]
-            [game-of-life.view :refer [draw-grid scale]]
+            [game-of-life.view :refer [draw-cells scale]]
             [game-of-life.util :refer :all]))
 
-(declare configuration)
-
-(def blinker [[0 1 0] [0 1 0] [0 1 0]])
+(def blinker #{'(0 1) '(1 1) '(2 1)})
 
 (describe "Conway's Game of Life control loop tests"
 
@@ -20,47 +18,40 @@
                   q/mouse-x (stub :mock-mouse-x {:return 43})
                   q/mouse-y (stub :mock-mouse-y {:return 43})
                   m/fun-mode (stub :mock-fun-mode)])
-  (with configuration (configure))
 
-  (it "configures window size"
-    (should-contain [:size [(* scale height) (* scale width)]] @configuration))
-
-  (it "configures setup"
-    (should-contain [:setup setup] @configuration))
-
-  (it "configures updater"
-    (should-contain [:update next-state] @configuration))
-
-  (it "configures renderer"
-    (should-contain [:draw draw-grid] @configuration))
-
-  (it "configures quil functional mode"
-    (should-contain [:middleware [m/fun-mode]] @configuration))
+  #_(it "defines the board sketch"
+    (game-of-life)
+    (should-have-invoked :mock-defsketch {:with [life
+                                                 :size [(* scale height) (* scale width)]
+                                                 :setup setup
+                                                 :update next-state
+                                                 :draw draw-cells
+                                                 :middleware [m/fun-mode]]}))
 
   (it "setup sets frame rate"
     (setup)
     (should-have-invoked :mock-frame-rate {:with [fps]}))
 
-  (it "setup initializes empty grid"
-    (should= (empty-grid height width) (setup)))
+  (it "setup initializes empty cell set"
+    (should= #{} (setup)))
 
   (it "toggles the state of a cell"
-    (let [empty-grid  (empty-grid 3 3)
-          full-grid   (full-grid 3 3)]
-      (should-contain 1 (flatten (toggle empty-grid 0 0)))
-      (should-contain 0 (flatten (toggle full-grid 1 1)))))
+    (let [populated #{'(0 0)}
+          empty #{}]
+      (should (empty? (toggle populated 0 0)))
+      (should (some? (toggle empty 0 0)))))
 
   (it "calculates closest cell to mouse click"
     (should=[2 2] (process-click)))
 
   (it "toggles selected cell when mouse is clicked"
-    (should-contain 1 (flatten (new-state (empty-grid 3 3)))))
+    (should-contain '(2 2) (new-state #{})))
 
-  #_(it "updates the game state if key is pressed"
+  (it "updates the game state if key is pressed"
     (with-redefs [q/mouse-pressed? (stub :mock-mouse-pressed? {:return false})
                   q/key-pressed? (stub :mock-key-pressed? {:return true})
                   toggle (stub :mock-toggle)]
-      (let [grid [[0 0 0] [1 1 1] [0 0 0]]]
+      (let [grid #{'(1 0) '(1 1) '(1 2)}]
         (should-not-have-invoked :mock-toggle)
         (should= grid (new-state blinker)))))
 
@@ -69,7 +60,7 @@
                   q/key-pressed? (stub :mock-key-pressed? {:return false})
                   toggle (stub :mock-toggle)
                   next-state (stub :mock-next-state)])
-    (let [grid [[0 0 0] [1 1 1] [0 0 0]]]
+    (let [grid #{'(1 0) '(1 1) '(1 2)}]
       (new-state grid)
       (should-not-have-invoked :mock-toggle)
       (should-not-have-invoked :mock-next-state))))

@@ -3,7 +3,7 @@
             [quil.middleware :as m]
             [game-of-life.util :refer :all]
             [game-of-life.game :refer [next-state]]
-            [game-of-life.view :refer [draw-grid scale]]))
+            [game-of-life.view :refer [draw-cells scale]]))
 
 (declare life)
 
@@ -13,18 +13,13 @@
 
 (defn setup []
   (q/frame-rate fps)
-  (empty-grid height width))
+  #{})
 
-(defn configure []
-  [life
-   [:size       [(* scale height) (* scale width)]]
-   [:setup      setup]
-   [:update     next-state]
-   [:draw       draw-grid]
-   [:middleware [m/fun-mode]]])
-
-(defn toggle [grid x y]
-  (update-in grid [x y] #(if (= 0 %) 1 0)))
+(defn toggle [cells x y]
+  (let [pt (list x y)]
+    (if (contains? cells pt)
+      (disj cells pt)
+      (conj cells pt))))
 
 (defn process-click []
   (let [x   (int (/ (q/mouse-x) scale))
@@ -42,9 +37,8 @@
     :size   [(* scale height) (* scale width)]
     :setup  setup
     :update new-state
-    :draw   draw-grid
-    :middleware [m/fun-mode])
-  #_(apply q/defsketch (apply concat (configure height width))))
+    :draw   draw-cells
+    :middleware [m/fun-mode]))
 
 (defn -main
   [& args]

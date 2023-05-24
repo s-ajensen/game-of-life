@@ -5,11 +5,11 @@
 
 (def scale 20)
 
-(defn draw-cell [grid x y]
-  (let [cell  (get-cell grid x y)
-        color (if (= 1 cell) 0 255)]
+(defn draw-cell [x y]
+  (let [color 0]
     (q/fill color)
     (q/rect (* scale x) (* scale y) scale scale)))
 
-(defn draw-grid [grid]
-  (doall (for-cell grid draw-cell)))
+(defn draw-cells [cells]
+  (q/background 255)
+  (doall (map #(draw-cell (first %) (last %)) cells)))
