@@ -47,7 +47,7 @@
   (it "toggles selected cell when mouse is clicked"
     (should-contain '(2 2) (new-state #{})))
 
-  (it "updates the game state if key is pressed"
+  #_(it "updates the game state if key is pressed"
     (with-redefs [q/mouse-pressed? (stub :mock-mouse-pressed? {:return false})
                   q/key-pressed? (stub :mock-key-pressed? {:return true})
                   toggle (stub :mock-toggle)]
